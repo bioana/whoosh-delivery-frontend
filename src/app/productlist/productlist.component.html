@@ -11,7 +11,33 @@
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button (click)="orderClicked(product.id)" mat-button>ORDER</button>
+        <button *ngIf="!orderOpened && user.role == UserRole.Customer" (click)="showOrder()" mat-button>ORDER</button>
       </mat-card-actions>
+
+      <form *ngIf="orderOpened" class="example-form" (ngSubmit)="openOrder(product.id)">
+        <mat-form-field class="example-full-width">
+          <mat-label>Number of products</mat-label>
+          <input type="number" matInput [formControl]="numberFormControl" [errorStateMatcher]="matcher"
+                 placeholder="Ex. 2">
+          @if (numberFormControl.hasError('number') && !numberFormControl.hasError('required')) {
+            <mat-error>Please enter a valid number</mat-error>
+          }
+          @if (numberFormControl.hasError('required')) {
+            <mat-error>Number is <strong>required</strong></mat-error>
+          }
+        </mat-form-field>
+
+        <mat-label>Date</mat-label>
+        <input type="date" matInput [formControl]="dateFormControl" [errorStateMatcher]="matcher"
+               placeholder="Ex. 12.12.2003">
+        @if (dateFormControl.hasError('date') && !dateFormControl.hasError('required')) {
+          <mat-error>Please enter a valid date</mat-error>
+        }
+        @if (dateFormControl.hasError('required')) {
+          <mat-error>Date is <strong>required</strong></mat-error>
+        }
+
+         <button type="submit" mat-button>ORDER</button>
+      </form>
 </mat-card>
 </li>

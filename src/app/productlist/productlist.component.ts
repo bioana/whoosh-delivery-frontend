@@ -3,13 +3,22 @@ import { Product } from '../product';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-import { User } from '../user';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { User, UserRole } from '../user';
+import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ErrorStateMatcher } from '@angular/material/core';
 
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 @Component({
   selector: 'app-productlist',
   standalone: true,
-  imports: [MatButtonModule,MatCardModule, CommonModule, RouterLink, RouterOutlet],
+  imports: [MatButtonModule,MatCardModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule ],
   templateUrl: './productlist.component.html',
   styleUrl: './productlist.component.css',
 })
@@ -29,17 +38,39 @@ export class ProductlistComponent {
 
   products = [this.product1, this.product2];
 
+  orderOpened = false;
+
   user: User = {
-    id: undefined,
+    id: 1234,
     name: "",
     displayNmae: "",
     mail: "",
-    password: ""}
+    password: "",
+    role: UserRole.Customer
+  }
 
-  public orderClicked(id:number) {
+  public showOrder() {
     if(this.user.id && this.user.id != undefined)
-    alert('Open ' + id);
+    this.orderOpened = true;
    else
    alert("You must log in to make an order")
   }
+
+  public get UserRole() {
+    return UserRole;
+  }
+
+ 
+   openOrder(id:number) {
+    if(!this.serviceForm.invalid)
+      alert("order sent")
+  }
+
+  numberFormControl = new FormControl('', [Validators.required]);
+  dateFormControl = new FormControl('', [Validators.required]);
+
+  serviceForm = new FormGroup({number : this.numberFormControl, date: this.dateFormControl });
+
+
+  matcher = new MyErrorStateMatcher();
 }
