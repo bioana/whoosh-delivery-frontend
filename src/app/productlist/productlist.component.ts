@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Product } from '../product';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import { CommonModule } from '@angular/common';
+import { User } from '../user';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-productlist',
   standalone: true,
-  imports: [MatButtonModule,MatCardModule, CommonModule],
+  imports: [MatButtonModule,MatCardModule, CommonModule, RouterLink, RouterOutlet],
   templateUrl: './productlist.component.html',
   styleUrl: './productlist.component.css',
 })
@@ -26,4 +28,18 @@ export class ProductlistComponent {
   };
 
   products = [this.product1, this.product2];
+
+  user: User = {
+    id: undefined,
+    name: "",
+    displayNmae: "",
+    mail: "",
+    password: ""}
+
+  public orderClicked(id:number) {
+    if(this.user.id && this.user.id != undefined)
+    alert('Open ' + id);
+   else
+   alert("You must log in to make an order")
+  }
 }
